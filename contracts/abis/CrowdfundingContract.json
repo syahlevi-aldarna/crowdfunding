@@ -1,0 +1,25 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "getProjects",
+      "outputs": [{ "type": "tuple[]" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "type": "uint256" }],
+      "name": "getProject",
+      "outputs": [{ "type": "tuple" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "type": "uint256" }, { "type": "uint256" }],
+      "name": "invest",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ]
+}
