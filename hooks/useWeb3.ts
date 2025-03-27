@@ -1,5 +1,5 @@
 import { useAccount, useConfig, useWalletClient } from "wagmi";
-import { mainnet, polygon } from "viem/chains";
+import { getChainById } from "@/services/web3/config";
 import { CHAIN_IDS } from "@/utils/constants";
 
 export const useWeb3 = () => {
@@ -10,20 +10,7 @@ export const useWeb3 = () => {
   // Get current chain from config
   const chainId = config.state.chainId;
 
-  // Map chainId to chain object
-  const getChainById = (id?: number) => {
-    if (!id) return undefined;
-
-    switch (id) {
-      case CHAIN_IDS.MAINNET:
-        return mainnet;
-      case CHAIN_IDS.POLYGON:
-        return polygon;
-      default:
-        return undefined;
-    }
-  };
-
+  // Map chainId to chain object using our utility function
   const chain = getChainById(chainId);
 
   return {

@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useWallet } from "@/hooks/useWallet";
+import { pharosService } from "@/services/web3/contracts";
+import { useRestaking } from "@/hooks/useRestaking";
 
 /**
  * ProjectDetail Component
@@ -32,6 +34,9 @@ export default function ProjectDetail({ id }: { id: string }) {
 
   // Get user wallet information
   const { isConnected } = useWallet();
+
+  // Get restaking information
+  const { stake } = useRestaking();
 
   // Mock data for specific project details
   const MOCK_PROJECTS = {
@@ -139,14 +144,29 @@ export default function ProjectDetail({ id }: { id: string }) {
   /**
    * Initiates the investment process after validation
    */
-  const handleInvest = () => {
+  const handleInvest = async () => {
     if (!isConnected) {
       setInvestError("Please connect your wallet first");
       return;
     }
 
     if (validateInvestment()) {
-      setShowConfirm(true);
+      try {
+        // Stake tokens terlebih dahulu
+        const stakeResult = await stake(Number(investAmount));
+        if (!stakeResult) return false;
+
+        // Lakukan investasi dengan parallel execution
+        const result = await pharosService.invest(id, Number(investAmount));
+        if (result) {
+          setShowConfirm(true);
+        } else {
+          setInvestError("Investment failed. Please try again.");
+        }
+      } catch (error) {
+        console.error("Investment error:", error);
+        setInvestError("Investment failed. Please try again.");
+      }
     }
   };
 

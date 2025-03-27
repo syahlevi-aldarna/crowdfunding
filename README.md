@@ -17,6 +17,19 @@ The platform allows:
 - **State Management:** React Query
 - **Authentication:** Wallet Connect
 
+## Pharos Integration Status
+
+This project is designed to work with Pharos SDK for Special Processing Networks (SPN), native restaking, and parallel execution:
+
+- **Current Status**: Using mock implementations for development
+- **Integration Path**: See `README-integration.md` for detailed integration instructions
+- **Features Ready for Integration**:
+  - Special Processing Networks (SPN) for crowdfunding
+  - Native restaking through `useRestaking.ts`
+  - Parallel execution framework via `executeParallel`
+
+When Pharos SDK is available, the mock implementations will be replaced with actual SDK calls.
+
 ## Getting Started
 
 First, install dependencies:
