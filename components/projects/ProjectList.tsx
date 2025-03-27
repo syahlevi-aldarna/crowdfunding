@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import ProjectCard from "@/components/projects/ProjectCard";
+import ProjectCard from "@/components/projects/shared/ProjectCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProjectWithProgress } from "@/types/project";
 import { MOCK_PROJECTS_WITH_PROGRESS } from "@/mocks/data";

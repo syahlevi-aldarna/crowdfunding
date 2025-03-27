@@ -11,6 +11,12 @@ import { useWalletClient } from "wagmi";
 import type { Project, Investment } from "./types";
 import crowdfundingABI from "../../contracts/abis/CrowdfundingContract.json";
 
+// IMPORTANT: This is a mock implementation for development
+// When @pharos/sdk is available, replace with:
+// import { PharosProvider, SPNRegistry } from "@pharos/sdk";
+import { PharosProvider, SPNRegistry } from "./pharos-mock";
+import { PHAROS_CONFIG } from "./pharos-config";
+
 // ATTENTION: These values must be updated with actual contract addresses
 // During development mode, these placeholder values are used with mock data
 export const CONTRACT_ADDRESSES: { [key: string]: Address } = {
@@ -75,3 +81,56 @@ export const contractFunctions = {
     throw new Error("Smart contract not yet integrated");
   },
 };
+
+export class PharosCrowdfundingService {
+  private provider: PharosProvider;
+  private spnRegistry: SPNRegistry;
+
+  constructor() {
+    this.provider = new PharosProvider({
+      l1Base: PHAROS_CONFIG.l1Base,
+      l1Core: PHAROS_CONFIG.l1Core,
+      l1Extension: PHAROS_CONFIG.l1Extension,
+    });
+    this.spnRegistry = new SPNRegistry(this.provider);
+  }
+
+  public getSPNRegistry() {
+    return this.spnRegistry;
+  }
+
+  async createProject(project: Omit<Project, "id">): Promise<string> {
+    const spn = await this.spnRegistry.getSPN("crowdfunding");
+    const result = await spn.executeParallel("createProject", [project]);
+    if (typeof result !== "string") {
+      throw new Error("Invalid response from createProject");
+    }
+    return result;
+  }
+
+  async invest(projectId: string, amount: number): Promise<boolean> {
+    const spn = await this.spnRegistry.getSPN("crowdfunding");
+    const result = await spn.executeParallel("invest", [projectId, amount]);
+    return result === true;
+  }
+
+  async getProjects(): Promise<Project[]> {
+    const spn = await this.spnRegistry.getSPN("crowdfunding");
+    const result = await spn.call("getProjects");
+    if (!Array.isArray(result)) {
+      throw new Error("Invalid response from getProjects");
+    }
+    return result as Project[];
+  }
+
+  async getProject(id: string): Promise<Project | null> {
+    const spn = await this.spnRegistry.getSPN("crowdfunding");
+    const result = await spn.call("getProject", [id]);
+    if (result && !Array.isArray(result)) {
+      return result as Project;
+    }
+    return null;
+  }
+}
+
+export const pharosService = new PharosCrowdfundingService();

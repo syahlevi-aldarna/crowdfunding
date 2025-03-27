@@ -1,22 +1,26 @@
 import { useQuery } from "@tanstack/react-query";
 import { Investment } from "../web3/types";
-import { contractFunctions } from "../web3/contracts";
+import { pharosService } from "../web3/contracts";
 import { getMockInvestments } from "@/mocks/data";
 
 // Function to fetch investment data
+// IMPORTANT: This is using mock implementation for development
+// When actual smart contracts are deployed, this will use real blockchain data
 const fetchInvestments = async (address?: string): Promise<Investment[]> => {
-  if (!address) {
-    return [];
-  }
+  if (!address) return [];
 
   try {
-    // Try to fetch from smart contract
-    // TODO: Implement with contract.getInvestmentsByAddress(address)
-    throw new Error("Smart contract not available");
+    // Attempt to fetch from SPN
+    const spn = await pharosService.getSPNRegistry().getSPN("crowdfunding");
+    const result = await spn.call("getInvestmentsByAddress", [address]);
+    if (Array.isArray(result)) {
+      return result as Investment[];
+    }
+    // Fallback to mock data
+    return getMockInvestments(address);
   } catch (error) {
-    console.log(
-      "Using mock data for investments because smart contract is not yet available"
-    );
+    console.error("Error fetching investments:", error);
+    // Return mock data for development
     return getMockInvestments(address);
   }
 };

@@ -4,7 +4,7 @@ import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, useEffect, useMemo } from "react";
-import { config } from "@/services/web3/web3";
+import { web3Config } from "@/services/web3/config";
 import "@rainbow-me/rainbowkit/styles.css";
 import { darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
 
@@ -155,7 +155,7 @@ export default function Web3Providers({
   // Only render with web3 providers on client-side
   try {
     return (
-      <WagmiProvider config={config}>
+      <WagmiProvider config={web3Config}>
         <QueryClientProvider client={queryClient}>
           <RainbowKitProvider
             theme={isDarkMode ? customDarkTheme : customLightTheme}

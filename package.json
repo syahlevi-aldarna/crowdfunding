@@ -23,6 +23,10 @@
     "viem": "^2.5.0",
     "wagmi": "^2.14.15"
   },
+  "pendingDependencies": {
+    "@pharos/sdk": "^1.0.0",
+    "@pharos/contracts": "^1.0.0"
+  },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
